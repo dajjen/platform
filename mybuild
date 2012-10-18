@@ -1,0 +1,18 @@
+#!/bin/bash
+echo "Starting..."
+drush --root='/var/aegir/platforms/platform/web' provision-save '@platform_davva' --context_type='platform' --makefile='/var/aegir/platforms/platform/davva.make'
+echo "alias created"
+drush make --working-copy davva.make web
+#drush @platform_davva provision-verify
+echo "drush is maked!"
+drush @hostmaster hosting-import @platform_davva
+echo "Imported"
+sleep 5
+drush provision-save '@davva' --context_type='site' --uri='davva.dev' --platform='@platform_davva' --server='@server_master' --db_server='@server_localhost' --profile='davva' --client_name='admin'
+echo "Site alias created!"
+
+echo "starting to install..."
+drush @davva provision-install
+echo "installed!"
+drush @hostmaster hosting-task @platform_davva verify
+echo "platform Varifyed"
